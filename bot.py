@@ -29,6 +29,6 @@ async def help(ctx: InteractionContext):
 
 
 #bot.grow_scale("commands.reaction_listener")
-#bot.grow_scale("commands.setup")
+bot.grow_scale("commands.cats.httpCat")
 
 bot.start(token)
