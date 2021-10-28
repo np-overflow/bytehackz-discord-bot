@@ -44,7 +44,7 @@ class BytehackzBot(Snake):
         await bot.synchronise_interactions()
         await ctx.send("Syncing done!")
 
-    @slash_command("help2", "Basic instructions and what this bot is.")
+    @slash_command("help", "Basic instructions and what this bot is.")
     async def help(self, ctx: InteractionContext):
         embed = Embed(
             "ByteHackz",
