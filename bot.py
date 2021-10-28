@@ -2,8 +2,9 @@ import logging
 from pathlib import Path
 
 from dis_snek.client import Snake
+from dis_snek.models import message_command
 from dis_snek.models.application_commands import slash_command
-from dis_snek.models.context import InteractionContext
+from dis_snek.models.context import InteractionContext, MessageContext
 from dis_snek.models.discord_objects.embed import Embed
 from dis_snek.models.listener import listen
 
@@ -15,7 +16,7 @@ logger = logging.getLogger("dis.snek")
 logger.setLevel(logging.DEBUG)
 
 
-bot = Snake(sync_interactions=True, debug_scope=GUILD)
+bot = Snake(default_prefix="!", debug_scope=GUILD)
 
 
 @listen()
@@ -23,6 +24,12 @@ async def on_ready():
     print(f"Logged in as: {bot.user}")
     print(f"Servers: {len(bot.guilds)}")
     print(f"I am in: {[i.name for i in bot.guilds]}")
+
+
+@message_command("sync")
+async def sync(ctx: MessageContext):
+    await bot.synchronise_interactions()
+    await ctx.send("Syncing done!")
 
 
 @slash_command("help", "Basic instructions and what this bot is")
