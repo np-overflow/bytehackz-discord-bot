@@ -1,12 +1,20 @@
+import logging
+
 from dis_snek.client import Snake
 from dis_snek.models.application_commands import slash_command
 from dis_snek.models.context import InteractionContext
 from dis_snek.models.discord_objects.embed import Embed
 from dis_snek.models.listener import listen
 
-from utils.config import TOKEN
+from utils.config import TOKEN, GUILD
 
-bot = Snake(sync_interactions=True, delete_unused_application_cmds=True)
+
+logging.basicConfig()
+logger = logging.getLogger("dis.snek")
+logger.setLevel(logging.DEBUG)
+
+
+bot = Snake(sync_interactions=True, debug_scope=GUILD)
 
 
 @listen()
@@ -27,7 +35,7 @@ async def help(ctx: InteractionContext):
     await ctx.send(embeds=[embed])
 
 
-bot.grow_scale("modules.misc.httpCat")
+bot.grow_scale("modules.misc.httpcats")
 
 
 bot.start(TOKEN)
