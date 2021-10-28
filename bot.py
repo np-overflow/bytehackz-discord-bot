@@ -4,7 +4,7 @@ from dis_snek.models.context import InteractionContext
 from dis_snek.models.discord_objects.embed import Embed
 from dis_snek.models.listener import listen
 
-from utils.config import token
+from utils.config import TOKEN
 
 bot = Snake(sync_interactions=True, delete_unused_application_cmds=True)
 
@@ -14,7 +14,6 @@ async def on_ready():
     print(f"Logged in as: {bot.user}")
     print(f"Servers: {len(bot.guilds)}")
     print(f"I am in: {[i.name for i in bot.guilds]}")
-
 
 
 @slash_command("help", "Basic instructions and what this bot is")
@@ -28,7 +27,7 @@ async def help(ctx: InteractionContext):
     await ctx.send(embeds=[embed])
 
 
-#bot.grow_scale("commands.reaction_listener")
-bot.grow_scale("commands.cats.httpCat")
+bot.grow_scale("modules.misc.httpCat")
 
-bot.start(token)
+
+bot.start(TOKEN)

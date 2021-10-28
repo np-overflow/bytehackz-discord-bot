@@ -1,2 +1,2 @@
-dis-snek @ git+https://github.com/Discord-Snake-Pit/Dis-Snek.git
-python-dotenv
+dis-snek>=1.2.2
+python-dotenv==0.19.1
