@@ -54,9 +54,11 @@ class BytehackzBot(Snake):
         embed.add_field("topic1", "value")
         await ctx.send(embeds=[embed])
 
-    async def on_command_error(self, source: str, error, *args, **kwargs) -> None:
+    async def on_command_error(self, source: str, error: Exception, *args, **kwargs) -> None:
         if isinstance(error, CommandCheckFailure) and isinstance(error.context, SendMixin):
             await error.context.send("You don't have permission to run this command.")
+        else:
+            await self.on_error(source, error, *args, **kwargs)
 
 
 bot = BytehackzBot(default_prefix="!", debug_scope=GUILD)
