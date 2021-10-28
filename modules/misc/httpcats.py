@@ -4,7 +4,7 @@ from dis_snek.models.application_commands import (
     slash_command,
     slash_option,
 )
-from dis_snek.models.context import InteractionContext
+from dis_snek.models.context import InteractionContext, AutocompleteContext
 from dis_snek.models.discord_objects.embed import EmbedAttachment
 from dis_snek.models.discord_objects.embed import Embed
 
@@ -21,7 +21,8 @@ class Cat(Scale):
         "status_code",
         "The status code (or ID) of the cat you're lookin' for",
         OptionTypes.INTEGER,
-        required=False
+        required=False,
+        autocomplete=True,
     )
     async def cat(self, ctx: InteractionContext, status_code: int = 0):
         embed = Embed(
@@ -33,6 +34,10 @@ class Cat(Scale):
         embed.image = EmbedAttachment(url=f"https://http.cat/{status_code}")
 
         await ctx.send(embeds=[embed])
+
+    @cat.autocomplete("status_code")
+    async def cat_autocomplete(self, ctx: AutocompleteContext, **kwargs):
+        await ctx.send([100, 101, 102, 200])
 
 
 def setup(bot):
