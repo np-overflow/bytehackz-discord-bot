@@ -10,8 +10,7 @@ from dis_snek.models.context import InteractionContext, MessageContext
 from dis_snek.models.discord_objects.embed import Embed
 from dis_snek.models.listener import listen
 
-from utils.config import TOKEN, GUILD
-
+from utils.config import TOKEN, GUILD, BOT_DEV_ROLE
 
 logging.basicConfig()
 logger = logging.getLogger("dis.snek")
@@ -40,12 +39,12 @@ class BytehackzBot(Snake):
         print(f"I am in: {[i.name for i in self.guilds]}")
 
     @message_command("sync")
-    @check(has_role("900760193376325662"))
+    # @check(has_role(BOT_DEV_ROLE))  # TODO add this back soon
     async def sync(self, ctx: MessageContext):
         await bot.synchronise_interactions()
         await ctx.send("Syncing done!")
 
-    @slash_command("help", "Basic instructions and what this bot is.")
+    @slash_command("help2", "Basic instructions and what this bot is.")
     async def help(self, ctx: InteractionContext):
         embed = Embed(
             "ByteHackz",
