@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 from dis_snek.client import Snake
 from dis_snek.models.application_commands import slash_command
@@ -35,7 +36,22 @@ async def help(ctx: InteractionContext):
     await ctx.send(embeds=[embed])
 
 
-bot.grow_scale("modules.misc.httpcats")
+def load_all_scales(module: str, nested: bool = True):
+    path = Path.cwd()
+    for m in module.split("."):
+        path = path.joinpath(m)
+
+    for item in path.iterdir():
+        if item.name.startswith("."):
+            continue
+
+        if item.is_dir() and nested:
+            load_all_scales(f"{module}.{item.stem}", nested)
+        elif item.is_file() and item.suffix == ".py":
+            bot.grow_scale(f"{module}.{item.stem}")
+
+
+load_all_scales("modules")
 
 
 bot.start(TOKEN)
