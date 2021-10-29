@@ -48,7 +48,7 @@ class Nerfgun(Scale):
             Weaponary include:",
             color="#F9AC42",
             footer="*no actual weapons lah, just nerf guns",
-            image="https://cdn.discordapp.com/attachments/713612810734534707/903506418999652362/banner.jpeg",
+            image="https://cdn.discordapp.com/attachments/900759773178396785/903654583845417040/bytehackz2021.003.png",
         )
         embed.add_field("item", "desc")
         embed.add_field("item", "desc")
