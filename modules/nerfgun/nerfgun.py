@@ -20,6 +20,7 @@ class Nerfgun(Scale):
         self.bot = bot
         self.queueMsg = None
         self.queue = []
+        self.next = None
 
     @slash_command("nerf_setup", "Setup the Nerf Gun queue in a specified text channel")
     @slash_option(
@@ -39,12 +40,12 @@ class Nerfgun(Scale):
         await channel.purge()
 
         embed = Embed(
-            "Nerf R' Us🔫",
-            "Let's face it, programming, *is hard*. So while you're racking your brains working on prototypes, remember to take breathers!\n\n\
+            "Nerf R' Us 🔫",
+            "Let's face it, programming 🖥, *is hard*. So while you're racking your brains working on prototypes, remember to take breathers!\n\n\
             In fact, if you're up for destressing, come on down to **Nerf R' Us**!\n\n \
-            Here, you'll get to wield **heavily modded**, *high calibre* weaponary* in a simple but fun game of can shooting\n\n\n\
-            At the end of the day, individuals/pairs with the highest scores get a special prize!👀\n\n\n\
-            We're located south of the Green Patch, queue up with the bot and we'll ping ya when you can come!\n\n\
+            Here, you'll get to wield **heavily modded**, *high calibre* weaponary* in a simple but fun game of can shooting 🎯\n\n\n\
+            At the end of the day, individuals/pairs with the highest scores get a special prize! 👀\n\n\n\
+            We're located south of the Green Patch, queue up with the bot and we'll ping ya when you can come! 📍\n\n\
             Weaponary include:",
             color="#F9AC42",
             footer="*no actual weapons lah, just nerf guns",
@@ -103,9 +104,18 @@ class Nerfgun(Scale):
 
         await self.queueMsg.edit(text)
 
-        user = await self.bot.get_user(self.queue[0])
-        await user.send(f"Hey {u.display_name}, you're up for the NERF game, be here in 5 or we'll move on!")
+        if len(self.queue) == 0:
+            self.next = None
+            return
 
+        user = await self.bot.get_user(self.queue[0])
+
+        if (user.id == self.next):
+            return
+        
+        await user.send(f"Hey {user.display_name}, you're up for the NERF game, be here in 5 mins or we'll move on!")
+
+            
 
     @component_callback("getInQueue")
     async def getInQueue(self, ctx):
