@@ -9,9 +9,11 @@ from dis_snek.models.context import InteractionContext
 from dis_snek.models.discord_objects.embed import EmbedAttachment
 from dis_snek.models.discord_objects.embed import Embed
 
+
 class Typeracer(Scale):
     def __init__(self, bot):
         self.bot = bot
 
-def setup(Bot):
-    Typeracer(Bot)
+
+def setup(bot):
+    Typeracer(bot)
