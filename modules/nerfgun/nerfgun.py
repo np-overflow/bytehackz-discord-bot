@@ -13,32 +13,49 @@ from dis_snek.models.enums import ButtonStyles
 from dis_snek.models.discord_objects.embed import Embed
 from dis_snek.models.listener import listen
 
+from pathlib import Path
+import orjson
+
 
 class Nerfgun(Scale):
     def __init__(self, bot):
         self.bot = bot
-        self.queueMsg = None
-        self.queue = []
-        self.next = None
+        self.queueMsg = None      # Message Object to edit when updating queue
+        self.queue = []           # Queue object, contains ID of queuers
+        self.next = None          # Next person coming up, stored to prevent repeated notification
+        self.leaderBoard = {}     # Leaderboard dict
+
+        if Path('leaderboard.json').is_file():
+            with open("leaderboard.json", "r") as file:
+                data = file.read()
+                self.leaderBoard = orjson.loads(data)
+                print(self.leaderBoard)
+                file.close()
 
     @slash_command("nerf_setup", "Setup the Nerf Gun queue in a specified text channel")
     @slash_option(
-        "channel",
+        "queuechannel",
         "ChannelID of channel to set up queue",
         OptionTypes.CHANNEL,
         required=True,
     )
-    async def nerf_setup(self, ctx: InteractionContext, channel):
+    @slash_option(
+        "boardchannel",
+        "ChannelID of channel to set up leaderboard",
+        OptionTypes.CHANNEL,
+        required=True,
+    )
+    async def nerf_setup(self, ctx: InteractionContext, queuechannel, boardchannel):
 
-        if type(channel) != GuildText:
+        if type(queuechannel) != GuildText or type(boardchannel) != GuildText:
             await ctx.send(
                 embeds=[
-                    Embed("Whoops", f"Channel must be a text channel", color="#F9AC42")
+                    Embed("Whoops", f"Channels must be text channels", color="#F9AC42")
                 ]
             )
             return
 
-        await channel.purge()
+        await queuechannel.purge()
 
         embed = Embed(
             "Nerf R' Us 🔫",
@@ -55,9 +72,9 @@ class Nerfgun(Scale):
         embed.add_field("item", "desc")
         embed.add_field("item", "desc")
 
-        await channel.send(embeds=[embed])
+        await queuechannel.send(embeds=[embed])
 
-        self.queueMsg = await channel.send("The queue is empty")
+        self.queueMsg = await queuechannel.send("The queue is empty")
 
         button1 = Button(
             style=ButtonStyles.BLURPLE,
@@ -72,10 +89,26 @@ class Nerfgun(Scale):
             custom_id="getOutQueue",
         )
 
-        await channel.send(
+        await queuechannel.send(
             "Wanna give it a try? Click here and we'll give u a direct ping when you're up!",
             components=[button1, button2],
         )
+
+        await boardchannel.purge()
+
+        embed = Embed(
+            "Nerf R' Us 🔫 **Leaderboard**",
+            "Ranked by score:\n\n",
+            color="#F9AC42",
+            footer="4: NA\n5: NA",
+            image="https://cdn.discordapp.com/attachments/900759773178396785/903654583845417040/bytehackz2021.003.png",
+        )
+        embed.add_field("2nd place 🥈", "NA", inline=True )
+        embed.add_field("1st place 🥇", "NA", inline=True )
+        embed.add_field("3rd place 🥉", "NA", inline=True )
+
+        await boardchannel.send(embeds=[embed])
+
 
         await ctx.send("Queue setup complete")
 
@@ -115,6 +148,36 @@ class Nerfgun(Scale):
             return
 
         await user.send(f"Hey {user.display_name}, you're up for the NERF game, be here in 5 mins or we'll move on!")
+
+    @slash_command("nerf_score", "Score a player")
+    @slash_option(
+        "player", 
+        "Player you're scoring",
+        OptionTypes.USER,
+        required=True
+    )
+    @slash_option(
+        "score", 
+        "The score you're giving this player (1-100)",
+        OptionTypes.INTEGER,
+        required=True
+    )
+    async def nerf_score(self, ctx: InteractionContext, player, score):
+        if score < 0 or score > 100: # Might be changed later on
+            await ctx.send(
+                embeds=[
+                    Embed("Whoops", f"Score must be between 1 & 100", color="#F9AC42")
+                ]
+            )
+            return
+
+        self.leaderBoard[str(player.id)] = score
+
+        json = orjson.dumps(self.leaderBoard)
+
+        with open("leaderboard.json", "wb") as file:
+            file.write(json)
+            file.close()  
 
     @component_callback("getInQueue")
     async def get_in_queue(self, ctx):
