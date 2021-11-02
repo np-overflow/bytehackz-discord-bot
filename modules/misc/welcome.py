@@ -29,8 +29,5 @@ class Welcome(Scale):
         await ctx.send("https://cdn.discordapp.com/attachments/895590724836401175/904702785965150278/unknown.png")
 
             
-        
-
-
 def setup(bot):
     Welcome(bot)

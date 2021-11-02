@@ -24,6 +24,7 @@ class Genius(Scale):
         self.queue = []
         self.maxTickets = 2
 
+
     @slash_command("genius_setup", "Setup the Genius Bar in a text channel")
     @slash_option(
         "channel",
@@ -75,6 +76,7 @@ class Genius(Scale):
 
         await ctx.send("Queue setup complete")
 
+
     @component_callback("getIn")
     async def get_in(self, ctx):
         user: int = ctx.author.id
@@ -109,10 +111,6 @@ class Genius(Scale):
             return
 
         await self.create_ticket(self, self.queue[0])
-
-
-            
-
 
 
     async def create_ticket(self, user):
@@ -150,7 +148,6 @@ class Genius(Scale):
             components=[button3]
             ) 
         
-
 
 def setup(Bot):
     Genius(Bot)

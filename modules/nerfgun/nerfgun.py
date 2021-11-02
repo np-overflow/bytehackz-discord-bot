@@ -32,6 +32,7 @@ class Nerfgun(Scale):
                 print(self.leaderBoard)
                 file.close()
 
+
     @slash_command("nerf_setup", "Setup the Nerf Gun queue in a specified text channel")
     @slash_option(
         "queuechannel",
@@ -112,6 +113,7 @@ class Nerfgun(Scale):
 
         await ctx.send("Queue setup complete")
 
+
     @slash_command("nerf_next", "Call up the next individual in the queue")
     async def nerf_next(self, ctx: InteractionContext):
         if len(self.queue) == 0:
@@ -149,6 +151,7 @@ class Nerfgun(Scale):
 
         await user.send(f"Hey {user.display_name}, you're up for the NERF game, be here in 5 mins or we'll move on!")
 
+
     @slash_command("nerf_score", "Score a player")
     @slash_option(
         "player", 
@@ -179,6 +182,7 @@ class Nerfgun(Scale):
             file.write(json)
             file.close()  
 
+
     @component_callback("getInQueue")
     async def get_in_queue(self, ctx):
         author = ctx.author
@@ -190,6 +194,7 @@ class Nerfgun(Scale):
         self.queue.append(author.id)
         await self.update_queue()
         await ctx.send("Queue up successful! Wait for our ping!", ephemeral=True)
+
 
     @component_callback("getOutQueue")
     async def get_out_queue(self, ctx):
