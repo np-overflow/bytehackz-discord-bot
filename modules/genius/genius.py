@@ -17,6 +17,7 @@ from dis_snek.http_requests.channels import ChannelRequests
 
 from utils.config import  GUILD
 
+
 class Genius(Scale):
     def __init__(self, bot):
         self.bot = bot
@@ -107,6 +108,8 @@ class Genius(Scale):
         await g.delete_channel(channels[1])
         await g.delete_channel(channels[2])
 
+        self.occupied.pop(ctx.author.id , None)
+
         if len(self.queue) == 0: #no-one in queue
             return
 
@@ -117,15 +120,22 @@ class Genius(Scale):
         g: Guild = await self.bot.get_guild(GUILD)
         cat = await g.create_category(
             f"ticket-{user}",
-            position=999,
-        )
-        ChannelRequests.edit_channel_permission(
-            cat.id,
-            user,
-            allow="1200",
-            deny="0",
-            perm_type=1
-        )
+            position=999)
+
+        await cat.edit_permission(PermissionOverwrite(
+                    id=895590724836401172,
+                    type=0,
+                    deny="1024",
+                    allow="0"
+                ))
+
+        await cat.edit_permission(PermissionOverwrite(
+                    id=user,
+                    type=1,
+                    allow="1024",
+                    deny="0"
+                ))
+        
         tc = await g.create_text_channel(
             f"ticket-{user}",
             category=cat.id
