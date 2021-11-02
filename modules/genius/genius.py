@@ -15,7 +15,7 @@ from dis_snek.models.discord_objects.embed import Embed
 from dis_snek.models.listener import listen
 from dis_snek.http_requests.channels import ChannelRequests
 
-from utils.config import  GUILD
+from utils.config import GUILD, PARTICIPANT_ROLE, MAX_TICKETS
 
 
 class Genius(Scale):
@@ -23,7 +23,7 @@ class Genius(Scale):
         self.bot = bot
         self.occupied = {}
         self.queue = []
-        self.maxTickets = 2
+        self.maxTickets = MAX_TICKETS
 
 
     @slash_command("genius_setup", "Setup the Genius Bar in a text channel")
@@ -123,7 +123,7 @@ class Genius(Scale):
             position=999)
 
         await cat.edit_permission(PermissionOverwrite(
-                    id=895590724836401172,
+                    id=PARTICIPANT_ROLE,
                     type=0,
                     deny="1024",
                     allow="0"
