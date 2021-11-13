@@ -15,8 +15,8 @@ class Welcome(Scale):
     def __init__(self, bot):
         self.bot = bot
 
-    @message_command("welcome")
-    async def Welcome(self, ctx: InteractionContext):
+    @slash_command(name="welcome", description="It's time for Bytehackz 2021!")
+    async def welcome(self, ctx: InteractionContext):
         embed = Embed(
             "Hello and welcome to Bytehackz 2021!",
             "The Byte®Hackz is an annual hackathon conducted for the Information Technology and Financial Informatics students taking the module Portfolio Development (PFD).\n\n\
