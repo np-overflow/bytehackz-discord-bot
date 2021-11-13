@@ -56,6 +56,10 @@ class Nerfgun(Scale):
         await self._setup_queue_channel(queuechannel)
         await self._setup_leaderboard_channel(boardchannel)
         self.bot.storage.save()
+
+        await self._update_queue()
+        await self._update_leaderboard()
+
         await ctx.send("Queue setup completed!")
 
     async def _setup_queue_channel(self, queuechannel):
