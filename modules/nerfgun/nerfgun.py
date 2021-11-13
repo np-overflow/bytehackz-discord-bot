@@ -15,6 +15,8 @@ from dis_snek.models.enums import ButtonStyles
 
 from storage.nerf import Nerf
 
+from utils.embeds import NERF_GUN
+
 
 class Nerfgun(Scale):
     def __init__(self, bot):
@@ -68,23 +70,7 @@ class Nerfgun(Scale):
 
     async def _setup_queue_channel(self, queuechannel):
         await queuechannel.purge()
-        embed = Embed(
-            "Nerf R' Us 🔫",
-            "Let's face it, programming 🖥, *is hard*. So while you're racking your brains working on prototypes, remember to take breathers!\n\n\
-            In fact, if you're up for destressing, come on down to **Nerf R' Us**!\n\n\
-            Here, you'll get to wield **modded**, *high calibre* weaponry* in a simple but fun game of can shooting 🎯\n\n\n\
-            At the end of the day, individuals/pairs with the highest scores get a special prize! 👀\n\n\n\
-            We're located south of the Green Patch, queue up with the bot and we'll ping ya when you can come! 📍\n\n\
-            Weaponry include:",
-            color="#F9AC42",
-            footer="*no actual weapons lah, just nerf guns",
-            image="https://cdn.discordapp.com/attachments/900759773178396785/903654583845417040/bytehackz2021.003.png",
-        )
-        embed.add_field("EH Spectre", "desc")
-        embed.add_field("Mega Cycloneshock", "desc", inline=True)
-        embed.add_field("Pharoah Ultra 7", "desc")
-        embed.add_field("Nerf Longshot", "desc", inline=True)
-        await queuechannel.send(embeds=[embed])
+        await queuechannel.send(embeds=[NERF_GUN])
 
         queue_msg = await queuechannel.send("Queue here!")
         self.nerf.queue.clear()

@@ -17,6 +17,7 @@ from dis_snek.http_requests.channels import ChannelRequests
 
 from storage.genius import Genius
 from utils.config import GUILD, PARTICIPANT_ROLE, MAX_TICKETS
+from utils.embeds import GENIUS_BAR
 
 
 class GeniusBar(Scale):
@@ -48,33 +49,19 @@ class GeniusBar(Scale):
         
         await channel.purge()
 
-        embed = Embed(
-            "Genius Bar 🧠",
-            "**Picture this**:\n\n\
-            You've got yourself a cool prototype in mind, and as your Team is setting things up, you realize something.\n\n\
-            Maybe its the fact that the services you're planning to use are incompaitable, or that Python 2.9 just won't cut it.\n\n\
-            That's where the Techies over at the **Genius Bar** come into play!\n\n\
-            These guys here have great experience and can offer valuable feedback and suggestions on how you can get your prototype up and running\n\n\n\
-            To book a session, just click the button below! 👇",
-            color="#F9AC42",
-            footer="🧠",
-            image="https://cdn.discordapp.com/attachments/900759773178396785/903654583845417040/bytehackz2021.003.png",
-        )
-
-        await channel.send(embeds=[embed])
+        await channel.send(embeds=[GENIUS_BAR])
 
         self.queueMsg = await channel.send("The queue is empty")
 
         button1 = Button(
             style=ButtonStyles.BLURPLE, 
             label="Queue up", emoji="▶",
-            custom_id="getIn") #Camel case good, dont @ me
+            custom_id="getIn")
 
         button2 = Button(
             style=ButtonStyles.RED,
             label="De-queue",
-            custom_id="getOut"
-        )
+            custom_id="getOut")
 
         await channel.send(
             "Book a session here and we'll ping you when we're free!",
