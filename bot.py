@@ -45,8 +45,9 @@ class BytehackzBot(Snake):
     @message_command("sync")
     # @check(has_role(BOT_DEV_ROLE))
     async def sync(self, ctx: MessageContext):
+        sync_msg = await ctx.send("Sync starting...")
         await bot.synchronise_interactions()
-        await ctx.send("Syncing done!")
+        await sync_msg.edit("Syncing done!")
 
     @slash_command("help", "Basic instructions and what this bot is.")
     async def help(self, ctx: InteractionContext):
