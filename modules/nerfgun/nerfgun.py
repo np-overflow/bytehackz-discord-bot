@@ -218,7 +218,6 @@ class Nerfgun(Scale):
 
     async def _update_leaderboard(self):
         aggregated_scores = sorted(self.nerf.score.items(), key=lambda item: item[1], reverse=True)
-        print(aggregated_scores)
 
         embed = Embed(
             "Nerf R' Us 🔫 **Leaderboard**",
