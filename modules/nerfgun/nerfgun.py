@@ -25,8 +25,9 @@ class Nerfgun(Scale):
     @listen()
     async def on_ready(self):
         await self.bot.storage.container.nerf.load_discord_objects(self.bot)
-        await self._update_queue()
-        await self._update_leaderboard()
+        if self.nerf.is_setup_done():
+            await self._update_queue()
+            await self._update_leaderboard()
 
     @slash_command(
         name="nerf",
@@ -97,18 +98,9 @@ class Nerfgun(Scale):
 
     async def _setup_leaderboard_channel(self, boardchannel):
         await boardchannel.purge()
-        embed = Embed(
-            "Nerf R' Us 🔫 **Leaderboard**",
-            "Ranked by score:\n\n",
-            color="#F9AC42",
-            footer="4: NA\n5: NA",
-            image="https://cdn.discordapp.com/attachments/900759773178396785/903654583845417040/bytehackz2021.003.png",
-        )
-        embed.add_field("2nd place 🥈", "NA", inline=True)
-        embed.add_field("1st place 🥇", "NA", inline=True)
-        embed.add_field("3rd place 🥉", "NA", inline=True)
-        leaderboard_msg = await boardchannel.send(embeds=[embed])
+        leaderboard_msg = await boardchannel.send("Leaderboard here!")
         self.nerf.set_leaderboard_message(leaderboard_msg)
+        await self._update_leaderboard()
 
     @slash_command(
         name="nerf",
@@ -157,6 +149,7 @@ class Nerfgun(Scale):
         author_id = ctx.author.id
         if author_id in self.nerf.queue:
             self.nerf.queue.remove(author_id)
+            self.bot.storage.save()
             await ctx.send("De-queued you", ephemeral=True)
             await self._update_queue()
         else:
@@ -215,7 +208,38 @@ class Nerfgun(Scale):
             self.now_playing_user = None
 
     async def _update_leaderboard(self):
-        pass
+        aggregated_scores = sorted(self.nerf.score.items(), key=lambda item: item[1])
+        print(aggregated_scores)
+
+        embed = Embed(
+            "Nerf R' Us 🔫 **Leaderboard**",
+            "Ranked by score:\n\n",
+            color="#F9AC42",
+            image="https://cdn.discordapp.com/attachments/900759773178396785/903654583845417040/bytehackz2021.003.png",
+        )
+
+        if len(aggregated_scores) >= 2:
+            embed.add_field("2nd place 🥈", f"<@{aggregated_scores[1][0]}> : {aggregated_scores[1][1]}", inline=True)
+        else:
+            embed.add_field("2nd place 🥈", "N.A.", inline=True)
+
+        if len(aggregated_scores) >= 1:
+            embed.add_field("1st place 🥇", f"<@{aggregated_scores[0][0]}> : {aggregated_scores[0][1]}", inline=True)
+        else:
+            embed.add_field("1st place 🥇", "N.A.", inline=True)
+
+        if len(aggregated_scores) >= 3:
+            embed.add_field("3rd place 🥉", f"<@{aggregated_scores[2][0]}> : {aggregated_scores[2][1]}", inline=True)
+        else:
+            embed.add_field("3rd place 🥉", "N.A.", inline=True)
+
+        footer_text = ""
+        for i in range(3, min(20, len(aggregated_scores))):
+            footer_text += f"{i+1} -> <@{aggregated_scores[i][0]}> : {aggregated_scores[i][1]}\n"
+
+        embed.footer = footer_text
+
+        await self.nerf.leaderboard_msg.edit(embeds=embed)
 
 
 def setup(bot):
