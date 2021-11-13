@@ -20,7 +20,7 @@ logger.setLevel(LOGGING_LEVEL)
 
 
 class BytehackzBot(Snake):
-    storage: JsonStorage  # Lazy way so type hinting working
+    storage: JsonStorage  # Lazy way for type hinting working
 
     def load_all_scales(self, module: str, nested: bool = True):
         path = Path.cwd()
