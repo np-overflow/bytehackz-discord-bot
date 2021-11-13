@@ -15,16 +15,21 @@ from dis_snek.models.discord_objects.embed import Embed
 from dis_snek.models.listener import listen
 from dis_snek.http_requests.channels import ChannelRequests
 
+from storage.genius import Genius
 from utils.config import GUILD, PARTICIPANT_ROLE, MAX_TICKETS
 
 
-class Genius(Scale):
+class GeniusBar(Scale):
     def __init__(self, bot):
         self.bot = bot
         self.occupied = {}
         self.queue = []
         self.maxTickets = MAX_TICKETS
+        self.genius: "Genius" = bot.storage.container.genius
 
+    @listen()
+    async def on_ready(self):
+        await self.genius.load_discord_objects(self.bot)
 
     @slash_command("genius_setup", "Setup the Genius Bar in a text channel")
     @slash_option(
@@ -159,5 +164,5 @@ class Genius(Scale):
             ) 
         
 
-def setup(Bot):
-    Genius(Bot)
+def setup(bot):
+    GeniusBar(bot)

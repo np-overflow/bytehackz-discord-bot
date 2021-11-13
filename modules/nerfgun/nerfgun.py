@@ -24,7 +24,7 @@ class Nerfgun(Scale):
 
     @listen()
     async def on_ready(self):
-        await self.bot.storage.container.nerf.load_discord_objects(self.bot)
+        await self.nerf.load_discord_objects(self.bot)
         if self.nerf.is_setup_done():
             await self._update_queue()
             await self._update_leaderboard()
