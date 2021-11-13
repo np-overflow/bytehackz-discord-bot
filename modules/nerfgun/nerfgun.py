@@ -229,11 +229,11 @@ class Nerfgun(Scale):
         else:
             embed.add_field("3rd place 🥉", "N.A.", inline=True)
 
-        footer_text = ""
+        runner_ups = ""
         for i in range(3, min(20, len(aggregated_scores))):
-            footer_text += f"{i+1} -> <@{aggregated_scores[i][0]}> : {aggregated_scores[i][1]}\n"
+            runner_ups += f"{i+1} -> <@{aggregated_scores[i][0]}> : {aggregated_scores[i][1]}\n"
 
-        embed.set_footer(footer_text)
+        embed.add_field("Runner ups", runner_ups)
 
         await self.nerf.leaderboard_msg.edit(content="", embeds=embed)
 
