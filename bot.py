@@ -42,6 +42,10 @@ class BytehackzBot(Snake):
         print(f"Servers: {len(self.guilds)}")
         print(f"I am in: {[i.name for i in self.guilds]}")
 
+    @listen()
+    async def on_disconnect(self):
+        self.storage.save()
+
     @message_command("sync")
     # @check(has_role(BOT_DEV_ROLE))
     async def sync(self, ctx: MessageContext):
