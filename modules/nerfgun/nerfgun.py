@@ -80,8 +80,10 @@ class Nerfgun(Scale):
             footer="*no actual weapons lah, just nerf guns",
             image="https://cdn.discordapp.com/attachments/900759773178396785/903654583845417040/bytehackz2021.003.png",
         )
-        embed.add_field("item", "desc")
-        embed.add_field("item", "desc")
+        embed.add_field("EH Spectre", "desc")
+        embed.add_field("Mega Cycloneshock", "desc", inline=True)
+        embed.add_field("Pharoah Ultra 7", "desc")
+        embed.add_field("Nerf Longshot", "desc", inline=True)
         await queuechannel.send(embeds=[embed])
 
         queue_msg = await queuechannel.send("Queue here!")
