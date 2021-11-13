@@ -217,7 +217,7 @@ class Nerfgun(Scale):
             self.now_playing_user = None
 
     async def _update_leaderboard(self):
-        aggregated_scores = sorted(self.nerf.score.items(), key=lambda item: item[1])
+        aggregated_scores = sorted(self.nerf.score.items(), key=lambda item: item[1], reverse=True)
         print(aggregated_scores)
 
         embed = Embed(
