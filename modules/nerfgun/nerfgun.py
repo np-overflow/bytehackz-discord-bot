@@ -53,9 +53,17 @@ class Nerfgun(Scale):
             await ctx.send(embeds=Embed("Whoops", f"Channels must be text channels", color="#F9AC42"))
             return
 
+        if self.nerf.is_setup_done():
+            await ctx.send(embeds=Embed("Whoops", f"You have already setup the nerf channels!", color="#F9AC42"))
+            return
+
         await self._setup_queue_channel(queuechannel)
         await self._setup_leaderboard_channel(boardchannel)
         self.bot.storage.save()
+
+        await self._update_queue()
+        await self._update_leaderboard()
+
         await ctx.send("Queue setup completed!")
 
     async def _setup_queue_channel(self, queuechannel):
@@ -76,7 +84,8 @@ class Nerfgun(Scale):
         embed.add_field("item", "desc")
         await queuechannel.send(embeds=[embed])
 
-        queue_msg = await queuechannel.send("The queue is empty")
+        queue_msg = await queuechannel.send("Queue here!")
+        self.nerf.queue.clear()
         self.nerf.set_queue_message(queue_msg)
 
         await queuechannel.send(
@@ -99,8 +108,8 @@ class Nerfgun(Scale):
     async def _setup_leaderboard_channel(self, boardchannel):
         await boardchannel.purge()
         leaderboard_msg = await boardchannel.send("Leaderboard here!")
+        self.nerf.score.clear()
         self.nerf.set_leaderboard_message(leaderboard_msg)
-        await self._update_leaderboard()
 
     @slash_command(
         name="nerf",
