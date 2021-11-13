@@ -53,6 +53,10 @@ class Nerfgun(Scale):
             await ctx.send(embeds=Embed("Whoops", f"Channels must be text channels", color="#F9AC42"))
             return
 
+        if self.nerf.is_setup_done():
+            await ctx.send(embeds=Embed("Whoops", f"You have already setup the nerf channels!", color="#F9AC42"))
+            return
+
         await self._setup_queue_channel(queuechannel)
         await self._setup_leaderboard_channel(boardchannel)
         self.bot.storage.save()
