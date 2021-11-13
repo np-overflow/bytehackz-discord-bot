@@ -214,15 +214,15 @@ class Nerfgun(Scale):
             image="https://cdn.discordapp.com/attachments/900759773178396785/903654583845417040/bytehackz2021.003.png",
         )
 
-        if len(aggregated_scores) >= 2:
-            embed.add_field("2nd place 🥈", f"<@{aggregated_scores[1][0]}> : {aggregated_scores[1][1]}", inline=True)
-        else:
-            embed.add_field("2nd place 🥈", "N.A.", inline=True)
-
         if len(aggregated_scores) >= 1:
             embed.add_field("1st place 🥇", f"<@{aggregated_scores[0][0]}> : {aggregated_scores[0][1]}", inline=True)
         else:
             embed.add_field("1st place 🥇", "N.A.", inline=True)
+
+        if len(aggregated_scores) >= 2:
+            embed.add_field("2nd place 🥈", f"<@{aggregated_scores[1][0]}> : {aggregated_scores[1][1]}", inline=True)
+        else:
+            embed.add_field("2nd place 🥈", "N.A.", inline=True)
 
         if len(aggregated_scores) >= 3:
             embed.add_field("3rd place 🥉", f"<@{aggregated_scores[2][0]}> : {aggregated_scores[2][1]}", inline=True)
@@ -233,7 +233,7 @@ class Nerfgun(Scale):
         for i in range(3, min(20, len(aggregated_scores))):
             footer_text += f"{i+1} -> <@{aggregated_scores[i][0]}> : {aggregated_scores[i][1]}\n"
 
-        embed.footer = footer_text
+        embed.set_footer(footer_text)
 
         await self.nerf.leaderboard_msg.edit(content="", embeds=embed)
 
