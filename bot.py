@@ -10,6 +10,7 @@ from dis_snek.models.context import InteractionContext, MessageContext
 from dis_snek.models.discord_objects.embed import Embed
 from dis_snek.models.listener import listen
 
+from storage.storage import JsonStorage
 from utils.config import TOKEN, GUILD, BOT_DEV_ROLE, LOGGING_LEVEL
 
 
@@ -19,6 +20,8 @@ logger.setLevel(LOGGING_LEVEL)
 
 
 class BytehackzBot(Snake):
+    storage: JsonStorage  # Lazy way so type hinting working
+
     def load_all_scales(self, module: str, nested: bool = True):
         path = Path.cwd()
         for m in module.split("."):
@@ -40,7 +43,7 @@ class BytehackzBot(Snake):
         print(f"I am in: {[i.name for i in self.guilds]}")
 
     @message_command("sync")
-    @check(has_role(BOT_DEV_ROLE))
+    # @check(has_role(BOT_DEV_ROLE))
     async def sync(self, ctx: MessageContext):
         await bot.synchronise_interactions()
         await ctx.send("Syncing done!")
@@ -63,5 +66,6 @@ class BytehackzBot(Snake):
 
 
 bot = BytehackzBot(default_prefix="!", debug_scope=GUILD)
+bot.storage = JsonStorage(bot, "data.json")
 bot.load_all_scales("modules")
 bot.start(TOKEN)
