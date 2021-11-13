@@ -248,7 +248,7 @@ class Nerfgun(Scale):
 
         embed.footer = footer_text
 
-        await self.nerf.leaderboard_msg.edit(embeds=embed)
+        await self.nerf.leaderboard_msg.edit(content="", embeds=embed)
 
 
 def setup(bot):
