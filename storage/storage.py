@@ -1,3 +1,5 @@
+import datetime
+import os
 from pathlib import Path
 
 import attr
@@ -15,9 +17,10 @@ class Container(DictSerializationMixin):
 
 
 class JsonStorage:
-    def __init__(self, bot, filename: str):
-        self.bot = bot
+    def __init__(self, filename: str, backup_folder: str, max_backups=5):
         self.filename = Path(filename)
+        self.backup_folder = Path(backup_folder)
+        self.max_backups = max_backups
         self.container = None
         self._init_data()
 
@@ -29,7 +32,23 @@ class JsonStorage:
         else:
             self.container = Container()
 
+        self.backup_folder.mkdir(exist_ok=True)
+
     def save(self):
-        with open(self.filename, "wb") as file:
+        self._save_file(self.filename)
+
+    def backup(self):
+        backup_filename = f"backup-{datetime.datetime.now().timestamp()}.json"
+        backup_path = self.backup_folder.joinpath(backup_filename)
+        self._save_file(backup_path)
+
+        backup_files = sorted(os.listdir(self.backup_folder), key=lambda file: os.path.getctime(self.backup_folder.joinpath(file).absolute()))
+        if len(backup_files) > self.max_backups:
+            os.remove(self.backup_folder.joinpath(backup_files[0]).absolute())
+
+        print("Backup done")
+
+    def _save_file(self, path):
+        with open(path, "wb") as file:
             data = orjson.dumps(self.container.to_dict())
             file.write(data)

@@ -1,6 +1,7 @@
 import logging
 from pathlib import Path
 
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from dis_snek.client import Snake
 from dis_snek.errors import CommandCheckFailure
 from dis_snek.mixins.send import SendMixin
@@ -76,6 +77,11 @@ class BytehackzBot(Snake):
 
 
 bot = BytehackzBot(default_prefix="!", debug_scope=GUILD)
-bot.storage = JsonStorage(bot, "data.json")
+
+bot.storage = JsonStorage("data.json", "./backup", 20)
+scheduler = AsyncIOScheduler()
+scheduler.add_job(bot.storage.backup, 'interval', minutes=5)
+scheduler.start()
+
 bot.load_all_scales("modules")
 bot.start(TOKEN)
