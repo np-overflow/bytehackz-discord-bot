@@ -53,6 +53,11 @@ class BytehackzBot(Snake):
         await bot.synchronise_interactions()
         await sync_msg.edit("Syncing done!")
 
+    @message_command("data_download")
+    # @check(has_role(BOT_DEV_ROLE))
+    async def data_download(self, ctx: MessageContext):
+        await ctx.send("Here is the data!", file=self.storage.filename)
+
     @slash_command("help", "Basic instructions and what this bot is.")
     async def help(self, ctx: InteractionContext):
         embed = Embed(
