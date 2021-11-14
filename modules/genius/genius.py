@@ -38,7 +38,7 @@ class GeniusBar(Scale):
     @slash_command(
         name="genius", 
         sub_cmd_name="setup",
-        description="Setup the Genius Bar in a text channel")
+        sub_cmd_description="Setup the Genius Bar in a text channel")
     @slash_option(
         "channel",
         "ChannelID of channel to set up Genius Bar",
@@ -59,7 +59,31 @@ class GeniusBar(Scale):
         await self.update_queue()
         await ctx.send("Setup complete")
 
-        
+
+    @slash_command(
+        name="genius", 
+        sub_cmd_name="kill",
+        sub_cmd_description="Kill all occupied and currently queued tickets")
+    async def genius_kill(self, ctx):
+        await ctx.defer()
+
+        guild = await self.bot.get_guild(GUILD)
+        self.genius.queue.clear()
+
+        for i in self.genius.occupied:
+            catId = self.genius.occupied[i]
+            cat = await self.bot.get_channel(catId)
+            channels = cat.channels
+
+            for i in channels:
+                await guild.delete_channel(i.id)
+            await guild.delete_channel(cat)
+
+        self.genius.occupied.clear()
+        await ctx.send("Tickets cleared")
+        self.bot.storage.save()
+
+
     async def setup_channel(self, channel):
         await channel.purge()
         await channel.send(embeds=[GENIUS_BAR])
