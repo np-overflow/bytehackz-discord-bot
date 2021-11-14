@@ -18,7 +18,10 @@ class Genius(DictSerializationMixin):
 
     @property
     def queue_msg(self):
-        return
+        return self.queue_message.message
+
+    def is_setup_done(self):
+        return self.queue_message
 
     def set_queue_message(self, message: Message):
         self.queue_message.set(message)
@@ -28,6 +31,9 @@ class Genius(DictSerializationMixin):
 
     def dequeue(self) -> int:
         return self.queue.pop(0)
+
+    def queue_empty(self):
+        return len(self.queue) <= 0
 
     def new_ticket(self, user, category):
         self.occupied[str(to_snowflake(user))] = to_snowflake(category)
