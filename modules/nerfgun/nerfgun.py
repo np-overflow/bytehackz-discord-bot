@@ -232,7 +232,8 @@ class Nerfgun(Scale):
         runner_ups = ""
         for i in range(3, min(20, len(aggregated_scores))):
             runner_ups += f"{i+1} -> <@{aggregated_scores[i][0]}> : {aggregated_scores[i][1]}\n"
-
+        if not runner_ups:
+            runner_ups = "N.A."
         embed.add_field("Runner ups", runner_ups)
 
         await self.nerf.leaderboard_msg.edit(content="", embeds=embed)
