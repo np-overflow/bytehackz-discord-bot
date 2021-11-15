@@ -16,7 +16,7 @@ from dis_snek.models.listener import listen
 from dis_snek.http_requests.channels import ChannelRequests
 
 from storage.genius import Genius
-from utils.config import GUILD, PARTICIPANT_ROLE, MAX_TICKETS
+from utils.config import GUILD, PARTICIPANT_ROLE, MAX_TICKETS, ADMIN_ROLE
 from utils.embeds import GENIUS_BAR
 
 
@@ -83,6 +83,33 @@ class GeniusBar(Scale):
         await ctx.send("Tickets cleared")
         self.bot.storage.save()
 
+    @slash_command(
+        name="add", 
+        description="Invite your teammate to this ticket")
+    @slash_option(
+        "user",
+        "Teammate that you want to add",
+        OptionTypes.USER,
+        required=True
+    )
+    async def add(self, ctx, user):
+        catId = ctx.channel.parent_id
+        if catId not in self.genius.occupied.values():
+            await ctx.send("You can only use this command in ticket channels!", ephemeral=True)
+            return
+        
+        channel = await self.bot.get_channel(catId)
+        await channel.edit_permission(
+            PermissionOverwrite(
+                id=user.id,
+                type=1,
+                allow="1024",
+                deny="0"
+            )
+        )
+
+        await ctx.send(f"{user.mention} has been added to this support ticket!")
+        
 
     async def setup_channel(self, channel):
         await channel.purge()
@@ -165,33 +192,40 @@ class GeniusBar(Scale):
     @component_callback("closeTicket")
     async def close_ticket(self, ctx: InteractionContext):
         author_id = str(ctx.author.id)
+        if await ctx.author.has_role(ADMIN_ROLE):
+            for key, value in self.genius.occupied.items():
+                if value == ctx.channel.parent_id:
+                    await self.delete_channels(value)
+                    del self.genius.occupied[key]
+                    break
 
-        if author_id not in self.genius.occupied:
+        elif author_id not in self.genius.occupied:
             await ctx.send("You did not create this ticket!", ephemeral=True)
-
-        cat = self.genius.occupied[author_id]
-        if cat != ctx.channel.parent_id: # shouldnt happen
             return
+        else:
+            cat = self.genius.occupied[author_id]
+            await self.delete_channels(cat)
 
+            if cat != ctx.channel.parent_id: # shouldnt happen
+                return
+            self.genius.close_ticket(author_id)
+
+        if len(self.genius.queue) > 0: #no-one in queue
+            userId = self.genius.dequeue()
+            await self.create_ticket(userId)
+                    
+        self.bot.storage.save()
+        await self.update_queue()
+
+        
+    async def delete_channels(self, catId):
         guild = await self.bot.get_guild(GUILD)
-        cat = await guild.get_channel(cat)
+        cat = await guild.get_channel(catId)
         channels = cat.channels
 
         for i in channels:
             await guild.delete_channel(i.id)
         await guild.delete_channel(cat)
-
-        self.genius.close_ticket(author_id)
-
-        if len(self.genius.queue) == 0: #no-one in queue
-            self.bot.storage.save()
-            await self.update_queue()
-            return
-
-        userId = self.genius.dequeue()
-        await self.create_ticket(userId)
-        self.bot.storage.save()
-        await self.update_queue()
 
 
     async def create_ticket(self, userId):
@@ -226,10 +260,11 @@ class GeniusBar(Scale):
             custom_id="closeTicket"
         )
 
-        await tc.send(
+        msg = await tc.send(
             f"Hey <@{userId}>! Welcome to your support channel! Please explain your issue here and someone will help you shortly. Alternatively, join your assigned vc.", # This text was definitely not stolen ;)
             components=[button3]
             ) 
+        await msg.pin()
 
         self.genius.new_ticket(userId, cat.id)
         
