@@ -6,6 +6,7 @@ from dis_snek.models.application_commands import (
     component_callback,
     slash_command,
     slash_option,
+    slash_permission
 )
 from dis_snek.models.context import InteractionContext
 from dis_snek.models.discord_objects.channel import GuildText
@@ -14,8 +15,10 @@ from dis_snek.models.discord_objects.embed import Embed
 from dis_snek.models.enums import ButtonStyles
 
 from storage.nerf import Nerf
+from utils.config import BOT_DEV_ROLE
 
 from utils.embeds import NERF_GUN
+from utils.perms import ADMIN_ONLY, BOT_DEV_ONLY, NOT_EVERYBODY
 
 
 class Nerfgun(Scale):
@@ -32,9 +35,8 @@ class Nerfgun(Scale):
             await self._update_leaderboard()
 
     @slash_command(
-        name="nerf",
-        sub_cmd_name="setup",
-        sub_cmd_description="Setup the Nerf Gun queue in a specified text channel"
+        name="nerf_setup",
+        description="Setup the Nerf Gun queue in a specified text channel"
     )
     @slash_option(
         "queuechannel",
@@ -48,6 +50,7 @@ class Nerfgun(Scale):
         OptionTypes.CHANNEL,
         required=True,
     )
+    @slash_permission(NOT_EVERYBODY, BOT_DEV_ONLY)
     async def nerf_setup(self, ctx: InteractionContext, queuechannel, boardchannel):
         await ctx.defer()
 
@@ -100,10 +103,10 @@ class Nerfgun(Scale):
         self.nerf.set_leaderboard_message(leaderboard_msg)
 
     @slash_command(
-        name="nerf",
-        sub_cmd_name="next",
-        sub_cmd_description="Call up the next individual in the queue"
+        name="nerf_next",
+        description="Call up the next individual in the queue"
     )
+    @slash_permission(NOT_EVERYBODY, ADMIN_ONLY)
     async def nerf_next(self, ctx: InteractionContext):
         if self.nerf.queue_is_empty():
             await ctx.send("Queue currently empty!")
@@ -167,9 +170,8 @@ class Nerfgun(Scale):
         await self.nerf.queue_msg.edit(text)
 
     @slash_command(
-        name="nerf",
-        sub_cmd_name="score",
-        sub_cmd_description="Score a player"
+        name="nerf_score",
+        description="Score a player"
     )
     @slash_option(
         "score",
@@ -183,6 +185,7 @@ class Nerfgun(Scale):
         OptionTypes.USER,
         required=False
     )
+    @slash_permission(NOT_EVERYBODY, ADMIN_ONLY)
     async def nerf_score(self, ctx: InteractionContext, score, player = None):
         await ctx.defer()
 

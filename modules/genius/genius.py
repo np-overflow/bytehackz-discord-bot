@@ -4,6 +4,7 @@ from dis_snek.models.application_commands import (
     component_callback,
     slash_command,
     slash_option,
+    slash_permission
 )
 from dis_snek.models.context import InteractionContext
 from dis_snek.models.discord_objects.embed import EmbedAttachment, EmbedField
@@ -18,6 +19,7 @@ from dis_snek.http_requests.channels import ChannelRequests
 from storage.genius import Genius
 from utils.config import GUILD, PARTICIPANT_ROLE, MAX_TICKETS, ADMIN_ROLE
 from utils.embeds import GENIUS_BAR
+from utils.perms import NOT_EVERYBODY, ADMIN_ONLY, BOT_DEV_ONLY
 
 
 class GeniusBar(Scale):
@@ -35,14 +37,14 @@ class GeniusBar(Scale):
 
 
     @slash_command(
-        name="genius", 
-        sub_cmd_name="setup",
-        sub_cmd_description="Setup the Genius Bar in a text channel")
+        name="genius_setup", 
+        description="Setup the Genius Bar in a text channel")
     @slash_option(
         "channel",
         "ChannelID of channel to set up Genius Bar",
         OptionTypes.CHANNEL,
         required=True)
+    @slash_permission(NOT_EVERYBODY, BOT_DEV_ONLY)
     async def genius_setup(self, ctx: InteractionContext, channel):
         await ctx.defer()
 
@@ -60,9 +62,9 @@ class GeniusBar(Scale):
 
 
     @slash_command(
-        name="genius", 
-        sub_cmd_name="kill",
-        sub_cmd_description="Kill all occupied and currently queued tickets")
+        name="genius_kill", 
+        description="Kill all occupied and currently queued tickets")
+    @slash_permission(NOT_EVERYBODY, BOT_DEV_ONLY)
     async def genius_kill(self, ctx):
         await ctx.defer()
 
