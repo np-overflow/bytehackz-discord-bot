@@ -29,7 +29,6 @@ class GeniusBar(Scale):
 
     @listen()
     async def on_ready(self):
-        print(MAX_TICKETS)
         await self.genius.load_discord_objects(self.bot)
         if self.genius.is_setup_done():
             await self.update_queue()
@@ -118,7 +117,6 @@ class GeniusBar(Scale):
         self.genius.occupied.clear()
         self.genius.queue.clear()
         queue_msg = await channel.send("Queue here")
-        print(queue_msg)
 
 
         self.genius.set_queue_message(queue_msg)
