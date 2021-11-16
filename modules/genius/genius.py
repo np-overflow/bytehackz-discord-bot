@@ -261,7 +261,7 @@ class GeniusBar(Scale):
         )
 
         msg = await tc.send(
-            f"Hey <@{userId}>! Welcome to your support channel! Please explain your issue here and someone will help you shortly. Alternatively, join your assigned vc.", # This text was definitely not stolen ;)
+            f"Hey <@{userId}>! Welcome to your support channel! Please explain your issue here and someone will help you shortly. Alternatively, join your assigned vc. To add your teammates to this ticket, type /add <name>. Remember to close the ticket after you're done!", # This text was definitely not stolen ;)
             components=[button3]
             ) 
         await msg.pin()

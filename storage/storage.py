@@ -50,5 +50,5 @@ class JsonStorage:
 
     def _save_file(self, path):
         with open(path, "wb") as file:
-            data = orjson.dumps(self.container.to_dict())
+            data = orjson.dumps(self.container.to_dict(), option=orjson.OPT_NON_STR_KEYS)
             file.write(data)
