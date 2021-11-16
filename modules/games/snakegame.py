@@ -32,6 +32,7 @@ class SnakeGame(Scale):
     # await channel.send('hello')
     @listen()
     async def on_message_create(self, event):
+        return
         message = event.message
         # print("Message Channel : {}".format(message.channel))
         # print(os.environ['CHANNEL_ID'])
