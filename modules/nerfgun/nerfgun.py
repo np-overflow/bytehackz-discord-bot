@@ -156,10 +156,14 @@ class Nerfgun(Scale):
             await ctx.send("You are already not in the queue :(", ephemeral=True)
 
     async def _update_queue(self):
-        text = "\n\n```\n"
-
+        text = "\n\n```\nNow playing:"
+        if self.now_playing_user:
+            text += f"{self.now_playing_user.display_name}\n\n"
+        else: 
+            text += f"Nobody :(\n\n"
+        
         if self.nerf.queue_is_empty():
-            text += "The queue is currently empty!"
+            text += "\n\nThe queue is currently empty!"
         else:
             for index, user in enumerate(self.nerf.queue):
                 u = await self.bot.get_user(user)

@@ -17,7 +17,7 @@ from dis_snek.models.listener import listen
 from dis_snek.http_requests.channels import ChannelRequests
 
 from storage.genius import Genius
-from utils.config import GUILD, PARTICIPANT_ROLE, MAX_TICKETS, ADMIN_ROLE
+from utils.config import GUILD, PARTICIPANT_ROLE, MAX_TICKETS, ADMIN_ROLE, GENIUS_ROLE
 from utils.embeds import GENIUS_BAR
 from utils.perms import NOT_EVERYBODY, ADMIN_ONLY, BOT_DEV_ONLY
 
@@ -261,7 +261,7 @@ class GeniusBar(Scale):
         )
 
         msg = await tc.send(
-            f"Hey <@{userId}>! Welcome to your support channel! Please explain your issue here and someone will help you shortly. Alternatively, join your assigned vc. To add your teammates to this ticket, type /add <name>. Remember to close the ticket after you're done!", # This text was definitely not stolen ;)
+            f"<@&900761364426027059> bar\nHey <@{userId}>! Welcome to your support channel! Please explain your issue here and someone will help you shortly. Alternatively, join your assigned vc. \nTo add your teammates to this ticket, type /add <name>. Remember to close the ticket after you're done!", # This text was definitely not stolen ;)
             components=[button3]
             ) 
         await msg.pin()
