@@ -12,7 +12,7 @@ class MessageStore(DictSerializationMixin):
     channel_id: Optional[int] = attr.ib(default=None, converter=optional(to_snowflake))
     message_id: Optional[int] = attr.ib(default=None, converter=optional(to_snowflake))
 
-    _message: Optional[Message] = attr.ib(default=None)
+    _message: Optional[Message] = attr.ib(default=None, metadata={"no_export": True})
 
     def __bool__(self):
         return self._message is not None

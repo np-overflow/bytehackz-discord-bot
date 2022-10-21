@@ -76,7 +76,7 @@ class BytehackzBot(Snake):
             await self.on_error(source, error, *args, **kwargs)
 
 
-bot = BytehackzBot(default_prefix="!", debug_scope=GUILD)
+bot = BytehackzBot(default_prefix="!", debug_scope=GUILD, sync_interactions=True)
 
 bot.storage = JsonStorage("data.json", "./backup", 20)
 scheduler = AsyncIOScheduler()
